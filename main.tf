@@ -88,3 +88,35 @@ resource "azurerm_storage_account" "sa_owa" {
     }
 }
 
+resource "azurerm_public_ip" "pip_owa_domain_controller" {
+    name = "pip-OWA-lab-DC-${random_id.deployment_id.hex}"
+    resource_group_name = azurerm_resource_group.rg_owa.name
+    location = azurerm_resource_group.rg_owa.location
+    allocation_method = "Dynamic"
+
+    tags = {
+        environment = "test"
+    }
+}
+
+resource "azurerm_network_interface" "nic_owa_domain_controller" {
+    name = "nic-OWA-lab-DC-${random_id.deployment_id.hex}"
+    resource_group_name = azurerm_resource_group.rg_owa.name
+    location = azurerm_resource_group.rg_owa.location
+
+    ip_configuration {
+        name = "internal"
+        subnet_id = azurerm_subnet.sn_owa.id
+        private_ip_address_allocation = "Static"
+        private_ip_address = var.domain_controller_ip
+    }
+
+    ip_configuration {
+        name = "external"
+        public_ip_address_id = azurerm_public_ip.pip_owa_domain_controller.id
+    }
+
+    tags = {
+        environment = "test"
+    }
+}
