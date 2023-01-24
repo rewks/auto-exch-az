@@ -17,5 +17,10 @@ resource "random_id" "resource_group_id" {
 
 resource "azurerm_resource_group" "rg_owa" {
     name = "rg-OWA-lab-${random_id.resource_group_id.hex}"
-    location = "West Europe"
+    location = "UK South"
+
+    tags = {
+        environment = "test"
+    }
 }
+
