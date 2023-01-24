@@ -16,7 +16,7 @@ resource "random_id" "deployment_id" {
 }
 
 resource "azurerm_resource_group" "rg_owa" {
-    name = "rg-OWA-lab-${random_id.deployment_id.hex}"
+    name = "rg-owa-lab-${random_id.deployment_id.hex}"
     location = var.lab_location
 
     tags = {
@@ -25,7 +25,7 @@ resource "azurerm_resource_group" "rg_owa" {
 }
 
 resource "azurerm_virtual_network" "vn_owa" {
-    name = "vn-OWA-lab-${random_id.deployment_id.hex}"
+    name = "vn-owa-lab-${random_id.deployment_id.hex}"
     address_space = var.virtual_network_range
     dns_servers = [var.domain_controller_ip]
     resource_group_name = azurerm_resource_group.rg_owa.name
@@ -37,14 +37,14 @@ resource "azurerm_virtual_network" "vn_owa" {
 }
 
 resource "azurerm_subnet" "sn_owa" {
-    name = "sn-OWA-lab-${random_id.deployment_id.hex}"
+    name = "sn-owa-lab-${random_id.deployment_id.hex}"
     address_prefixes = var.subnet_range
     resource_group_name = azurerm_resource_group.rg_owa.name
     virtual_network_name = azurerm_virtual_network.vn_owa.name
 }
 
 resource "azurerm_network_security_group" "sg_owa" {
-    name = "sg-OWA-lab-${random_id.deployment_id.hex}"
+    name = "sg-owa-lab-${random_id.deployment_id.hex}"
     resource_group_name = azurerm_resource_group.rg_owa.name
     location = azurerm_resource_group.rg_owa.location
 
@@ -54,7 +54,7 @@ resource "azurerm_network_security_group" "sg_owa" {
 }
 
 resource "azurerm_network_security_rule" "sr_owa" {
-    name = "sr-OWA-lab-${random_id.deployment_id.hex}"
+    name = "sr-owa-lab-${random_id.deployment_id.hex}"
     resource_group_name = azurerm_resource_group.rg_owa.name
     network_security_group_name = azurerm_network_security_group.sg_owa.name
 
@@ -62,14 +62,14 @@ resource "azurerm_network_security_rule" "sr_owa" {
     direction = "Inbound"
     access = "Allow"
     protocol = "Tcp"
-    source_address_prefixes = var.whitelisted_ips
+    source_address_prefix = "*"#var.whitelisted_ips
     source_port_range = "*"
     destination_address_prefix = "*"
     destination_port_ranges = var.allowed_ports
 }
 
 resource "azurerm_storage_account" "sa_owa" {
-    name = "sa-OWA-lab-${random_id.deployment_id.hex}"
+    name = "sa-owa-lab-${random_id.deployment_id.hex}"
     resource_group_name = azurerm_resource_group.rg_owa.name
     location = azurerm_resource_group.rg_owa.location
     account_tier = "Standard"
@@ -81,7 +81,7 @@ resource "azurerm_storage_account" "sa_owa" {
 }
 
 resource "azurerm_public_ip" "pip_owa_domain_controller" {
-    name = "pip-OWA-lab-DC-${random_id.deployment_id.hex}"
+    name = "pip-owa-lab-DC-${random_id.deployment_id.hex}"
     resource_group_name = azurerm_resource_group.rg_owa.name
     location = azurerm_resource_group.rg_owa.location
     allocation_method = "Dynamic"
@@ -92,7 +92,7 @@ resource "azurerm_public_ip" "pip_owa_domain_controller" {
 }
 
 resource "azurerm_network_interface" "nic_owa_domain_controller" {
-    name = "nic-OWA-lab-DC-${random_id.deployment_id.hex}"
+    name = "nic-owa-lab-DC-${random_id.deployment_id.hex}"
     resource_group_name = azurerm_resource_group.rg_owa.name
     location = azurerm_resource_group.rg_owa.location
 
@@ -110,7 +110,7 @@ resource "azurerm_network_interface" "nic_owa_domain_controller" {
 }
 
 resource "azurerm_windows_virtual_machine" "vm_owa_domain_controller" {
-    name = "vm-OWA-lab-DC-${random_id.deployment_id.hex}"
+    name = "vm-owa-lab-DC-${random_id.deployment_id.hex}"
     resource_group_name = azurerm_resource_group.rg_owa.name
     location = azurerm_resource_group.rg_owa.location
     size = "Standard_D1_v2"
@@ -124,6 +124,7 @@ resource "azurerm_windows_virtual_machine" "vm_owa_domain_controller" {
         caching = "ReadWrite"
         storage_account_type = "Standard_LRS"
         disk_size_gb = 128
+        name = "osdisk-owa-lab-DC-${random_id.deployment_id.hex}"
     }
 
     source_image_reference {
