@@ -41,10 +41,6 @@ resource "azurerm_subnet" "sn_owa" {
     address_prefixes = var.subnet_range
     resource_group_name = azurerm_resource_group.rg_owa.name
     virtual_network_name = azurerm_virtual_network.vn_owa.name
-
-    tags = {
-        environment = "test"
-    }
 }
 
 resource "azurerm_network_security_group" "sg_owa" {
@@ -70,17 +66,13 @@ resource "azurerm_network_security_rule" "sr_owa" {
     source_port_range = "*"
     destination_address_prefix = "*"
     destination_port_ranges = var.allowed_ports
-
-    tags = {
-        environment = "test"
-    }
 }
 
 resource "azurerm_storage_account" "sa_owa" {
     name = "sa-OWA-lab-${random_id.deployment_id.hex}"
     resource_group_name = azurerm_resource_group.rg_owa.name
     location = azurerm_resource_group.rg_owa.location
-    access_tier = "Standard"
+    account_tier = "Standard"
     account_replication_type = "LRS"
 
     tags = {
