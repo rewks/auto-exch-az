@@ -36,6 +36,17 @@ resource "azurerm_virtual_network" "vn_owa" {
     }
 }
 
+resource "azurerm_subnet" "sn_owa" {
+    name = "sn-OWA-lab-${random_id.deployment_id.hex}"
+    address_prefixes = var.subnet_range
+    resource_group_name = azurerm_resource_group.rg_owa.name
+    virtual_network_name = azurerm_virtual_network.vn_owa.name
+
+    tags = {
+        environment = "test"
+    }
+}
+
 resource "azurerm_storage_account" "sa_owa" {
     name = "sa-OWA-lab-${random_id.deployment_id.hex}"
     resource_group_name = azurerm_resource_group.rg_owa.name
