@@ -40,7 +40,22 @@ variable "admin_password" {
     type = string
 
     validation {
-        condition = can(regex("^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d).{8,}$", var.admin_password))
-        error_message = "Password must be 8+ characters including at least 1 upper case, 1 lower case and 1 digit."
+        condition = length(var.admin_password) >= 8
+        error_message = "Password must be 8+ characters"
+    }
+
+    validation {
+        condition = can(regex("[A-Z]", var.admin_password))
+        error_message = "Password must contain at least 1 upper case letter"
+    }
+
+    validation {
+        condition = can(regex("[a-z]", var.admin_password))
+        error_message = "Password must contain at least 1 lower case letter"
+    }
+
+    validation {
+        condition = can(regex("\\d", var.admin_password))
+        error_message = "Password must contain at least 1 numeric character"
     }
 }
