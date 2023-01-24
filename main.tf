@@ -47,6 +47,16 @@ resource "azurerm_subnet" "sn_owa" {
     }
 }
 
+resource "azurerm_network_security_group" "sg_owa" {
+    name = "sg-OWA-lab-${random_id.deployment_id.hex}"
+    resource_group_name = azurerm_resource_group.rg_owa.name
+    location = azurerm_resource_group.rg_owa.location
+
+    tags = {
+        environment = "test"
+    }
+}
+
 resource "azurerm_storage_account" "sa_owa" {
     name = "sa-OWA-lab-${random_id.deployment_id.hex}"
     resource_group_name = azurerm_resource_group.rg_owa.name
