@@ -33,3 +33,14 @@ variable "lab_location" {
     type = string
     default = "UK South"
 }
+
+variable "admin_password" {
+    description = "Password for the inbuilt Admin account"
+    sensitive = true
+    type = string
+
+    validation {
+        condition = can(regex("^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d).{8,}$"))
+        error_message = "Password must be 8+ characters including at least 1 upper case, 1 lower case and 1 digit."
+    }
+}

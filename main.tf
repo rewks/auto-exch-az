@@ -120,3 +120,32 @@ resource "azurerm_network_interface" "nic_owa_domain_controller" {
         environment = "test"
     }
 }
+
+resource "azurerm_windows_virtual_machine" "vm_owa_domain_controller" {
+    name = "vm-OWA-lab-DC-${random_id.deployment_id.hex}"
+    resource_group_name = azurerm_resource_group.rg_owa.name
+    location = azurerm_resource_group.rg_owa.location
+    size = "Standard_D1_v2"
+    admin_username = "Administrator"
+    admin_password = var.admin_password
+    network_interface_ids = [azurerm_network_interface.nic_owa_domain_controller.id]
+    computer_name = "DC01"
+    timezone = "UTC"
+
+    os_disk {
+        caching = "ReadWrite"
+        storage_account_type = "Standard_LRS"
+        disk_size_gb = 128
+    }
+
+    source_image_reference {
+        publisher = "MicrosoftWindowsServer"
+        offer = "WindowsServer"
+        sku = "2022-datacenter"
+        version = "latest"
+    }
+
+    tags = {
+        environment = "test"
+    }
+}
