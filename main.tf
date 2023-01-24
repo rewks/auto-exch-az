@@ -97,14 +97,10 @@ resource "azurerm_network_interface" "nic_owa_domain_controller" {
     location = azurerm_resource_group.rg_owa.location
 
     ip_configuration {
-        name = "internal"
+        name = "nic1"
         subnet_id = azurerm_subnet.sn_owa.id
         private_ip_address_allocation = "Static"
         private_ip_address = var.domain_controller_ip
-    }
-
-    ip_configuration {
-        name = "external"
         public_ip_address_id = azurerm_public_ip.pip_owa_domain_controller.id
     }
 
