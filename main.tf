@@ -10,3 +10,12 @@ terraform {
 provider "azurerm" {
   features {}
 }
+
+resource "random_id" "resource_group_id" {
+    byte_length = 8
+}
+
+resource "azurerm_resource_group" "rg_owa" {
+    name = "rg-OWA-lab-${random_id.resource_group_id.hex}"
+    location = "West Europe"
+}
