@@ -114,7 +114,7 @@ resource "azurerm_windows_virtual_machine" "vm_owa_domain_controller" {
     resource_group_name = azurerm_resource_group.rg_owa.name
     location = azurerm_resource_group.rg_owa.location
     size = "Standard_D1_v2"
-    admin_username = "Administrator"
+    admin_username = "LabAdmin"
     admin_password = var.admin_password
     network_interface_ids = [azurerm_network_interface.nic_owa_domain_controller.id]
     computer_name = "DC01"

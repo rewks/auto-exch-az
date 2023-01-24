@@ -35,7 +35,7 @@ variable "lab_location" {
 }
 
 variable "admin_password" {
-    description = "Password for the inbuilt Admin account"
+    description = "Password for the Domain Admin account"
     sensitive = true
     type = string
 
