@@ -9,7 +9,7 @@ Before using the script, you need to install the following:
 1. Terraform
 2. The Azure CLI
 
-Also make sure you are authenticated to Azure through the Azure CLI using `az login`
+Also make sure you are authenticated to Azure through the Azure CLI using `az login`. You may need to specify the tenant ID as well e.g. `az login --tenant 9ae1b9b3-28c5-41a2-f5a4-7ba4bcddfb6a`
 
 Once the above requirements are met, clone this repo and run the following commands:
 
