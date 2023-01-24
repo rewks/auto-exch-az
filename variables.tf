@@ -1,7 +1,13 @@
 variable "whitelisted_ips" {
-    description = "External IPs to be allowed to connect to lab machines via RDP and HTTPS"
+    description = "External IPs to be allowed to connect to lab machines"
     type = list
     default = ["*"]
+}
+
+variable "allowed_ports" {
+    description = "Ports that external IPs can connect to"
+    type = list
+    default = ["443", "3389"]
 }
 
 variable "virtual_network_range" {

@@ -57,6 +57,25 @@ resource "azurerm_network_security_group" "sg_owa" {
     }
 }
 
+resource "azurerm_network_security_rule" "sr_owa" {
+    name = "sr-OWA-lab-${random_id.deployment_id.hex}"
+    resource_group_name = azurerm_resource_group.rg_owa.name
+    network_security_group_name = azurerm_network_security_group.sg_owa.name
+
+    priority = 200
+    direction = "Inbound"
+    access = "Allow"
+    protocol = "Tcp"
+    source_address_prefixes = var.whitelisted_ips
+    source_port_range = "*"
+    destination_address_prefix = "*"
+    destination_port_ranges = var.allowed_ports
+
+    tags = {
+        environment = "test"
+    }
+}
+
 resource "azurerm_storage_account" "sa_owa" {
     name = "sa-OWA-lab-${random_id.deployment_id.hex}"
     resource_group_name = azurerm_resource_group.rg_owa.name

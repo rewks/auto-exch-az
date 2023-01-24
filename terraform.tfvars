@@ -1,1 +1,2 @@
-whitelisted_ips = [ "*" ]
+whitelisted_ips = ["*"]
+allowed_ports = ["443", "3389"]
