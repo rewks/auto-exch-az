@@ -12,7 +12,7 @@ provider "azurerm" {
 }
 
 resource "random_id" "deployment_id" {
-    byte_length = 8
+    byte_length = 4
 }
 
 resource "azurerm_resource_group" "rg_owa" {
