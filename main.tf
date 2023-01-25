@@ -11,8 +11,8 @@ provider "azurerm" {
   features {}
 }
 
-resource "azurerm_resource_group" "rg_owa" {
-    name = "rg-owa-lab"
+resource "azurerm_resource_group" "exch_lab_rg" {
+    name = "${var.exchlab}-rg"
     location = var.lab_location
 
     tags = {
@@ -20,48 +20,15 @@ resource "azurerm_resource_group" "rg_owa" {
     }
 }
 
-resource "azurerm_virtual_network" "vn_owa" {
-    name = "vn-owa-lab"
-    address_space = var.virtual_network_range
-    dns_servers = [var.domain_controller_ip, "8.8.8.8"]
-    resource_group_name = azurerm_resource_group.rg_owa.name
-    location = azurerm_resource_group.rg_owa.location
-
-    tags = {
-        environment = "test"
-    }
-}
-
-resource "azurerm_subnet" "sn_owa" {
-    name = "sn-owa-lab"
-    address_prefixes = var.subnet_range
-    resource_group_name = azurerm_resource_group.rg_owa.name
-    virtual_network_name = azurerm_virtual_network.vn_owa.name
-}
-
-resource "azurerm_network_security_group" "sg_owa" {
-    name = "sg-owa-lab"
-    resource_group_name = azurerm_resource_group.rg_owa.name
-    location = azurerm_resource_group.rg_owa.location
-
-    tags = {
-        environment = "test"
-    }
-}
-
-resource "azurerm_network_security_rule" "sr_owa" {
-    name = "sr-owa-lab"
-    resource_group_name = azurerm_resource_group.rg_owa.name
-    network_security_group_name = azurerm_network_security_group.sg_owa.name
-
-    priority = 200
-    direction = "Inbound"
-    access = "Allow"
-    protocol = "Tcp"
-    source_address_prefix = "*"#var.whitelisted_ips
-    source_port_range = "*"
-    destination_address_prefix = "*"
-    destination_port_ranges = var.allowed_ports
+module "network" {
+    source = "./modules/network"
+    lab_location = var.lab_location
+    resource_prefix = var.resource_prefix
+    resource_group_name = azurerm_resource_group.exch_lab_rg.name
+    whitelisted_ips = var.whitelisted_ips
+    allowed_ports = var.allowed_ports
+    virtual_network_range = var.virtual_network_range
+    subnet_range = var.subnet_range
 }
 
 resource "azurerm_storage_account" "sa_owa" {

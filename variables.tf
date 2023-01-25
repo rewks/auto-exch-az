@@ -1,3 +1,15 @@
+variable "lab_location" {
+    description = "Azure location to deploy lab in"
+    type = string
+    default = "UK South"
+}
+
+variable "resource_prefix" {
+    description = "Prefix for resource names"
+    type = string
+    default = "exchlab"
+}
+
 variable "whitelisted_ips" {
     description = "External IPs to be allowed to connect to lab machines"
     type = list
@@ -22,17 +34,16 @@ variable "subnet_range" {
     default = ["10.50.0.0/27"]
 }
 
+
+
+
 variable "domain_controller_ip" {
     description = "IP to designate to the domain controller"
     type = string
     default = "10.50.0.10"
 }
 
-variable "lab_location" {
-    description = "Azure location to deploy lab in"
-    type = string
-    default = "UK South"
-}
+
 
 variable "admin_password" {
     description = "Password for the Domain Admin account"
