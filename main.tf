@@ -43,15 +43,3 @@ module "domain-controller" {
 
 
 
-
-resource "azurerm_storage_account" "sa_owa" {
-    name = "saowalab"
-    resource_group_name = azurerm_resource_group.rg_owa.name
-    location = azurerm_resource_group.rg_owa.location
-    account_tier = "Standard"
-    account_replication_type = "LRS"
-
-    tags = {
-        environment = "test"
-    }
-}
