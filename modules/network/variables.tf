@@ -36,3 +36,8 @@ variable "subnet_range" {
     type = list
     default = ["10.50.0.0/27"]
 }
+
+variable "domain_controller_ip" {
+    description = "IP to designate to the domain controller"
+    type = string
+}

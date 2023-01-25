@@ -29,6 +29,7 @@ module "network" {
     allowed_ports = var.allowed_ports
     virtual_network_range = var.virtual_network_range
     subnet_range = var.subnet_range
+    domain_controller_ip = var.domain_controller_ip
 }
 
 module "domain-controller" {
@@ -43,3 +44,15 @@ module "domain-controller" {
 
 
 
+
+resource "azurerm_storage_account" "sa_owa" {
+    name = "saowalab"
+    resource_group_name = azurerm_resource_group.rg_owa.name
+    location = azurerm_resource_group.rg_owa.location
+    account_tier = "Standard"
+    account_replication_type = "LRS"
+
+    tags = {
+        environment = "test"
+    }
+}
