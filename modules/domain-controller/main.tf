@@ -1,5 +1,5 @@
 resource "azurerm_public_ip" "exch_lab_pip_dc" {
-    name = "${var.exchlab}-pip"
+    name = "${var.resource_prefix}-pip"
     resource_group_name = var.resource_group_name
     location = var.lab_location
     allocation_method = "Dynamic"
@@ -10,7 +10,7 @@ resource "azurerm_public_ip" "exch_lab_pip_dc" {
 }
 
 resource "azurerm_network_interface" "exch_lab_nic_dc" {
-    name = "${var.exchlab}-nic"
+    name = "${var.resource_prefix}-nic"
     resource_group_name = var.resource_group_name
     location = var.lab_location
 
@@ -36,7 +36,7 @@ resource "random_password" "DA_password" {
 }
 
 resource "azurerm_windows_virtual_machine" "exch_lab_vm_dc" {
-    name = "${var.exchlab}-vm"
+    name = "${var.resource_prefix}-vm"
     resource_group_name = var.resource_group_name
     location = var.lab_location
     size = "Standard_D1_v2"

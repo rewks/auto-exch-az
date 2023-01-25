@@ -12,7 +12,7 @@ provider "azurerm" {
 }
 
 resource "azurerm_resource_group" "exch_lab_rg" {
-    name = "${var.exchlab}-rg"
+    name = "${var.resource_prefix}-rg"
     location = var.lab_location
 
     tags = {
