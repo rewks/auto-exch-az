@@ -21,10 +21,32 @@ variable "subnet_id" {
 variable "domain_controller_ip" {
     description = "IP to designate to the domain controller"
     type = string
-    default = "10.50.0.10"
+}
+
+variable "domain_controller_name" {
+    description = "Hostname of the domain controller"
+    type = string
+}
+
+variable "domain_name" {
+    description = "The domain name"
+    type = string
 }
 
 variable "admin_username" {
     description = "Username for the Domain Admin account"
     type = string
+}
+
+variable "admin_password" {
+    description = "Password for the Domain Admin account"
+    type = string
+    sensitive = true
+}
+
+locals {
+    dc_fqdn = join(".", [var.domain_controller_name, var.domain_name])
+    auto_logon_data = "<AutoLogon><Password><Value>${var.admin_password}</Value></Password><Enabled>true</Enabled><LogonCount>1</LogonCount><Username>${var.admin_username}</Username></AutoLogon>"
+    first_logon_data = file("${path.module}/files/FirstLogonCommands.xml")
+    custom_data = base64encode(join(" ", ["Param($RemoteHostName = \"${local.dc_fqdn}\", $ComputerName = \"${var.domain_controller_name}\")", file("${path.module}/files/winrm.ps1")]))
 }

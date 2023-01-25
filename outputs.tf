@@ -7,5 +7,5 @@ output "DA_User" {
 }
 
 output "DA_Pass" {
-    value = nonsensitive(module.domain-controller.da_password)
+    value = nonsensitive(random_password.DA_password.result)
 }

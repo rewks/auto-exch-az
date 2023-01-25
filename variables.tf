@@ -34,13 +34,22 @@ variable "subnet_range" {
     default = ["10.50.0.0/27"]
 }
 
-
-
-
 variable "domain_controller_ip" {
     description = "IP to designate to the domain controller"
     type = string
     default = "10.50.0.10"
+}
+
+variable "domain_controller_name" {
+    description = "Hostname of the domain controller"
+    type = string
+    default = "DC01"
+}
+
+variable "domain_name" {
+    description = "The domain name"
+    type = string
+    default = "rewks.local"
 }
 
 variable "admin_username" {

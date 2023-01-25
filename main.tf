@@ -20,6 +20,14 @@ resource "azurerm_resource_group" "exch_lab_rg" {
     }
 }
 
+resource "random_password" "DA_password" {
+    length = 16
+    special = false
+    min_lower = 1
+    min_upper = 1
+    min_numeric = 1
+}
+
 module "network" {
     source = "./modules/network"
     lab_location = var.lab_location
@@ -39,7 +47,10 @@ module "domain-controller" {
     resource_group_name = azurerm_resource_group.exch_lab_rg.name
     subnet_id = module.network.subnet_id
     domain_controller_ip = var.domain_controller_ip
+    domain_controller_name = var.domain_controller_name
+    domain_name = var.domain_name
     admin_username = var.admin_username
+    admin_password = random_password.DA_password.result
 }
 
 
@@ -47,8 +58,8 @@ module "domain-controller" {
 
 resource "azurerm_storage_account" "sa_owa" {
     name = "saowalab"
-    resource_group_name = azurerm_resource_group.rg_owa.name
-    location = azurerm_resource_group.rg_owa.location
+    resource_group_name = azurerm_resource_group.exch_lab_rg.name
+    location = var.lab_location
     account_tier = "Standard"
     account_replication_type = "LRS"
 

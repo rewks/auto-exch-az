@@ -1,5 +1,5 @@
 resource "azurerm_public_ip" "exch_lab_pip_dc" {
-    name = "${var.resource_prefix}-pip"
+    name = "${var.resource_prefix}-pip-dc"
     resource_group_name = var.resource_group_name
     location = var.lab_location
     allocation_method = "Dynamic"
@@ -10,7 +10,7 @@ resource "azurerm_public_ip" "exch_lab_pip_dc" {
 }
 
 resource "azurerm_network_interface" "exch_lab_nic_dc" {
-    name = "${var.resource_prefix}-nic"
+    name = "${var.resource_prefix}-nic-dc"
     resource_group_name = var.resource_group_name
     location = var.lab_location
 
@@ -27,30 +27,23 @@ resource "azurerm_network_interface" "exch_lab_nic_dc" {
     }
 }
 
-resource "random_password" "DA_password" {
-    length = 16
-    special = false
-    min_lower = 1
-    min_upper = 1
-    min_numeric = 1
-}
-
 resource "azurerm_windows_virtual_machine" "exch_lab_vm_dc" {
-    name = "${var.resource_prefix}-vm"
+    name = "${var.resource_prefix}-vm-dc"
     resource_group_name = var.resource_group_name
     location = var.lab_location
     size = "Standard_D1_v2"
     admin_username = var.admin_username
-    admin_password = random_password.DA_password.result
+    admin_password = var.admin_password
     network_interface_ids = [azurerm_network_interface.exch_lab_nic_dc.id]
-    computer_name = "DC01"
+    computer_name = var.domain_controller_name
     timezone = "UTC"
+    custom_data = local.custom_data
 
     os_disk {
         caching = "ReadWrite"
         storage_account_type = "Standard_LRS"
         disk_size_gb = 128
-        name = "osdisk-owa-lab-DC"
+        name = "${var.resource_prefix}-osdisk-dc"
     }
 
     source_image_reference {
@@ -58,6 +51,16 @@ resource "azurerm_windows_virtual_machine" "exch_lab_vm_dc" {
         offer = "WindowsServer"
         sku = "2022-datacenter"
         version = "latest"
+    }
+
+    additional_unattend_content {
+        setting = "AutoLogon"
+        content = local.auto_logon_data
+    }
+
+    additional_unattend_content {
+        setting = "FirstLogonCommands"
+        content = local.first_logon_data
     }
 
     tags = {
