@@ -43,30 +43,8 @@ variable "domain_controller_ip" {
     default = "10.50.0.10"
 }
 
-
-
-variable "admin_password" {
-    description = "Password for the Domain Admin account"
-    sensitive = true
+variable "admin_username" {
+    description = "Username for the Domain Admin account"
     type = string
-
-    validation {
-        condition = length(var.admin_password) >= 8
-        error_message = "Password must be 8+ characters"
-    }
-
-    validation {
-        condition = can(regex("[A-Z]", var.admin_password))
-        error_message = "Password must contain at least 1 upper case letter"
-    }
-
-    validation {
-        condition = can(regex("[a-z]", var.admin_password))
-        error_message = "Password must contain at least 1 lower case letter"
-    }
-
-    validation {
-        condition = can(regex("\\d", var.admin_password))
-        error_message = "Password must contain at least 1 numeric character"
-    }
+    default = "LabAdmin"
 }
