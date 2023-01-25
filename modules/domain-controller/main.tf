@@ -67,3 +67,16 @@ resource "azurerm_windows_virtual_machine" "exch_lab_vm_dc" {
         environment = "test"
     }
 }
+
+resource "azurerm_virtual_machine_extension" "exch_lab_dc_ext" {
+    name = "create-ad-forest"
+    virtual_machine_id = azurerm_windows_virtual_machine.exch_lab_vm_dc.id
+    publisher = "Microsoft.Compute"
+    type = "CustomScriptExtension"
+    type_handler_version = "1.10.14"
+    settings = <<SETTINGS
+    {
+        "commandToExecute": "powershell.exe -Command \"${local.powershell_command}\""
+    }
+    SETTINGS
+}
