@@ -11,12 +11,8 @@ provider "azurerm" {
   features {}
 }
 
-resource "random_id" "deployment_id" {
-    byte_length = 4
-}
-
 resource "azurerm_resource_group" "rg_owa" {
-    name = "rg-owa-lab-${random_id.deployment_id.hex}"
+    name = "rg-owa-lab"
     location = var.lab_location
 
     tags = {
@@ -25,7 +21,7 @@ resource "azurerm_resource_group" "rg_owa" {
 }
 
 resource "azurerm_virtual_network" "vn_owa" {
-    name = "vn-owa-lab-${random_id.deployment_id.hex}"
+    name = "vn-owa-lab"
     address_space = var.virtual_network_range
     dns_servers = [var.domain_controller_ip]
     resource_group_name = azurerm_resource_group.rg_owa.name
@@ -37,14 +33,14 @@ resource "azurerm_virtual_network" "vn_owa" {
 }
 
 resource "azurerm_subnet" "sn_owa" {
-    name = "sn-owa-lab-${random_id.deployment_id.hex}"
+    name = "sn-owa-lab"
     address_prefixes = var.subnet_range
     resource_group_name = azurerm_resource_group.rg_owa.name
     virtual_network_name = azurerm_virtual_network.vn_owa.name
 }
 
 resource "azurerm_network_security_group" "sg_owa" {
-    name = "sg-owa-lab-${random_id.deployment_id.hex}"
+    name = "sg-owa-lab"
     resource_group_name = azurerm_resource_group.rg_owa.name
     location = azurerm_resource_group.rg_owa.location
 
@@ -54,7 +50,7 @@ resource "azurerm_network_security_group" "sg_owa" {
 }
 
 resource "azurerm_network_security_rule" "sr_owa" {
-    name = "sr-owa-lab-${random_id.deployment_id.hex}"
+    name = "sr-owa-lab"
     resource_group_name = azurerm_resource_group.rg_owa.name
     network_security_group_name = azurerm_network_security_group.sg_owa.name
 
@@ -69,7 +65,7 @@ resource "azurerm_network_security_rule" "sr_owa" {
 }
 
 resource "azurerm_storage_account" "sa_owa" {
-    name = "sa-owa-lab-${random_id.deployment_id.hex}"
+    name = "saowalab"
     resource_group_name = azurerm_resource_group.rg_owa.name
     location = azurerm_resource_group.rg_owa.location
     account_tier = "Standard"
@@ -81,7 +77,7 @@ resource "azurerm_storage_account" "sa_owa" {
 }
 
 resource "azurerm_public_ip" "pip_owa_domain_controller" {
-    name = "pip-owa-lab-DC-${random_id.deployment_id.hex}"
+    name = "pip-owa-lab-DC"
     resource_group_name = azurerm_resource_group.rg_owa.name
     location = azurerm_resource_group.rg_owa.location
     allocation_method = "Dynamic"
@@ -92,7 +88,7 @@ resource "azurerm_public_ip" "pip_owa_domain_controller" {
 }
 
 resource "azurerm_network_interface" "nic_owa_domain_controller" {
-    name = "nic-owa-lab-DC-${random_id.deployment_id.hex}"
+    name = "nic-owa-lab-DC"
     resource_group_name = azurerm_resource_group.rg_owa.name
     location = azurerm_resource_group.rg_owa.location
 
@@ -110,7 +106,7 @@ resource "azurerm_network_interface" "nic_owa_domain_controller" {
 }
 
 resource "azurerm_windows_virtual_machine" "vm_owa_domain_controller" {
-    name = "vm-owa-lab-DC-${random_id.deployment_id.hex}"
+    name = "vm-owa-lab-DC"
     resource_group_name = azurerm_resource_group.rg_owa.name
     location = azurerm_resource_group.rg_owa.location
     size = "Standard_D1_v2"
@@ -124,7 +120,7 @@ resource "azurerm_windows_virtual_machine" "vm_owa_domain_controller" {
         caching = "ReadWrite"
         storage_account_type = "Standard_LRS"
         disk_size_gb = 128
-        name = "osdisk-owa-lab-DC-${random_id.deployment_id.hex}"
+        name = "osdisk-owa-lab-DC"
     }
 
     source_image_reference {
