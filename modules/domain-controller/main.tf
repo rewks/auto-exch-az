@@ -31,7 +31,7 @@ resource "azurerm_windows_virtual_machine" "exch_lab_vm_dc" {
     name = "${var.resource_prefix}-vm-dc"
     resource_group_name = var.resource_group_name
     location = var.lab_location
-    size = "Standard_D1_v2"
+    size = "Standard_D2as_v4"
     admin_username = var.admin_username
     admin_password = var.admin_password
     network_interface_ids = [azurerm_network_interface.exch_lab_nic_dc.id]
