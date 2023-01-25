@@ -8,4 +8,5 @@ output "DA_User" {
 
 output "DA_Pass" {
     value = module.domain-controller.da_password
+    sensitive = true
 }
