@@ -55,7 +55,7 @@ resource "azurerm_windows_virtual_machine" "exch_lab_vm_exch" {
     admin_username = var.exchange_username
     admin_password = random_password.exch_password.result
     network_interface_ids = [azurerm_network_interface.exch_lab_nic_exch.id]
-    computer_name = var.domain_controller_name
+    computer_name = var.exchange_server_name
     timezone = "UTC"
     custom_data = local.custom_data
 
