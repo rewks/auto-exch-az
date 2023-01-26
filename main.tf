@@ -53,17 +53,15 @@ module "domain-controller" {
     admin_password = random_password.DA_password.result
 }
 
-
-
-
-resource "azurerm_storage_account" "sa_owa" {
-    name = "saowalab"
+module "exchange-server" {
+    source = "./modules/exchange-server"
+    lab_location = var.lab_location
+    resource_prefix = var.resource_prefix
     resource_group_name = azurerm_resource_group.exch_lab_rg.name
-    location = var.lab_location
-    account_tier = "Standard"
-    account_replication_type = "LRS"
-
-    tags = {
-        environment = "test"
-    }
+    subnet_id = module.network.subnet_id
+    exchange_server_ip = var.exchange_server_ip
+    exchange_server_name = var.exchange_server_name
+    domain_name = var.domain_name
+    admin_username = var.admin_username
+    admin_password = random_password.DA_password.result
 }

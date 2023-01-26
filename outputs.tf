@@ -9,3 +9,7 @@ output "DA_User" {
 output "DA_Pass" {
     value = nonsensitive(random_password.DA_password.result)
 }
+
+output "EXCH01_IP" {
+    value = module.exchange-server.exch_ip
+}

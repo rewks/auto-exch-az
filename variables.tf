@@ -46,6 +46,18 @@ variable "domain_controller_name" {
     default = "DC01"
 }
 
+variable "exchange_server_ip" {
+    description = "IP to designate to the exchange server"
+    type = string
+    default = "10.50.0.20"
+}
+
+variable "exchange_server_name" {
+    description = "Hostname of the exchange server"
+    type = string
+    default = "EXCH01"
+}
+
 variable "domain_name" {
     description = "The domain name"
     type = string
