@@ -36,7 +36,7 @@ resource "azurerm_network_security_rule" "exch_lab_sr" {
     direction = "Inbound"
     access = "Allow"
     protocol = "Tcp"
-    source_address_prefix = var.whitelisted_ips
+    source_address_prefixes = var.whitelisted_ips
     source_port_range = "*"
     destination_address_prefix = "*"
     destination_port_ranges = var.allowed_ports

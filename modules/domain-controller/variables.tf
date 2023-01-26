@@ -51,11 +51,9 @@ locals {
     first_logon_data = file("${path.module}/files/FirstLogonCommands.xml")
     custom_data = base64encode(join(" ", ["Param($RemoteHostName = \"${local.dc_fqdn}\", $ComputerName = \"${var.domain_controller_name}\")", file("${path.module}/files/winrm.ps1")]))
 
-    import_command       = "Import-Module ADDSDeployment"
     password_command     = "$password = ConvertTo-SecureString ${var.admin_password} -AsPlainText -Force"
-    install_ad_command   = "Add-WindowsFeature -name ad-domain-services -IncludeManagementTools"
-    configure_ad_command = "Install-ADDSForest -CreateDnsDelegation:$false -DomainMode Win2016 -DomainName ${var.domain_name} -DomainNetbiosName ${local.netbios_name} -ForestMode Win2016 -InstallDns:$true -SafeModeAdministratorPassword $password -Force:$true"
-    shutdown_command     = "shutdown -r -t 10"
+    install_ad_command   = "Install-WindowsFeature -name AD-Domain-Services -IncludeManagementTools"
+    configure_ad_command = "Install-ADDSForest -DomainName ${var.domain_name} -DomainNetBIOSName ${local.netbios_name} -SafeModeAdministratorPassword $password -CreateDNSDelegation:$false -InstallDNS:$true -Force:$true"
     exit_code_hack       = "exit 0"
-    powershell_command   = "${local.import_command}; ${local.password_command}; ${local.install_ad_command}; ${local.configure_ad_command}; ${local.shutdown_command}; ${local.exit_code_hack}"
+    powershell_command   = "${local.password_command}; ${local.install_ad_command}; ${local.configure_ad_command}; ${local.exit_code_hack}"
 }
