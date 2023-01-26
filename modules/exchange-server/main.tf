@@ -101,3 +101,8 @@ resource "azurerm_virtual_machine_extension" "exch_lab_exch_ext" {
     }
     SETTINGS
 }
+
+data "azurerm_public_ip" "exch_ip" {
+    name = azurerm_public_ip.exch_lab_pip_exch.name
+    resource_group_name = var.resource_group_name
+}

@@ -81,3 +81,8 @@ resource "azurerm_virtual_machine_extension" "exch_lab_dc_ext" {
     }
     SETTINGS
 }
+
+data "azurerm_public_ip" "dc_ip" {
+    name = azurerm_public_ip.exch_lab_pip_dc.name
+    resource_group_name = var.resource_group_name
+}
