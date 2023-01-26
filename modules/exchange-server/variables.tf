@@ -51,6 +51,7 @@ variable "exchange_username" {
 }
 
 locals {
+    exch_fqdn = join(".", [var.exchange_server_name, var.domain_name])
     first_logon_data = file("${path.module}/files/FirstLogonCommands.xml")
     custom_data = base64encode(join(" ", ["Param($RemoteHostName = \"${local.exch_fqdn}\", $ComputerName = \"${var.exchange_server_name}\")", file("${path.module}/files/winrm.ps1")]))
 
