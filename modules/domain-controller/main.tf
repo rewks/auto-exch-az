@@ -2,7 +2,7 @@ resource "azurerm_public_ip" "exch_lab_pip_dc" {
     name = "${var.resource_prefix}-pip-dc"
     resource_group_name = var.resource_group_name
     location = var.lab_location
-    allocation_method = "Dynamic"
+    allocation_method = "Static"
 
     tags = {
         environment = "test"
@@ -80,9 +80,4 @@ resource "azurerm_virtual_machine_extension" "exch_lab_dc_ext" {
         "commandToExecute": "powershell.exe -Command \"${local.powershell_command}\""
     }
     SETTINGS
-}
-
-data "azurerm_public_ip" "dc_ip" {
-    name = azurerm_public_ip.exch_lab_pip_dc.name
-    resource_group_name = var.resource_group_name
 }

@@ -51,14 +51,10 @@ variable "exchange_username" {
 }
 
 locals {
-    exch_fqdn = join(".", [var.exchange_server_name, var.domain_name])
-    netbios_name = split(".", var.domain_name)[0]
     first_logon_data = file("${path.module}/files/FirstLogonCommands.xml")
     custom_data = base64encode(join(" ", ["Param($RemoteHostName = \"${local.exch_fqdn}\", $ComputerName = \"${var.exchange_server_name}\")", file("${path.module}/files/winrm.ps1")]))
 
-    password_command = "$password = ConvertTo-SecureString ${var.admin_password} -AsPlainText -Force"
-    credentials_command = "$creds = New-Object PSCredential -ArgumentList('${var.admin_username}', $password)"
-    join_ad_command = "Add-Computer -DomainName ${var.domain_name} -Credential $creds -Force"
+    wait_for_domain = "while (!(Test-Connection -ComputerName ${var.domain_name} -Count 1 -Quiet) -and ($retryCount++ -le 200)) { Start-Sleep 5 }"
     exit_code = "exit 0"
-    powershell_command   = "${local.password_command}; ${local.credentials_command}; ${local.join_ad_command}; ${local.exit_code}"
+    powershell_command = "${local.wait_for_domain}; ${local.exit_code}"
 }

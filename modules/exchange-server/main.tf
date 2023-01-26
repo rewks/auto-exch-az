@@ -2,7 +2,7 @@ resource "azurerm_public_ip" "exch_lab_pip_exch" {
     name = "${var.resource_prefix}-pip-exch"
     resource_group_name = var.resource_group_name
     location = var.lab_location
-    allocation_method = "Dynamic"
+    allocation_method = "Static"
 
     tags = {
         environment = "test"
@@ -21,18 +21,6 @@ resource "azurerm_network_interface" "exch_lab_nic_exch" {
         private_ip_address = var.exchange_server_ip
         public_ip_address_id = azurerm_public_ip.exch_lab_pip_exch.id
     }
-
-    tags = {
-        environment = "test"
-    }
-}
-
-resource "azurerm_storage_account" "exch_lab_sa" {
-    name = "exchstorage"
-    resource_group_name = var.resource_group_name
-    location = var.lab_location
-    account_tier = "Standard"
-    account_replication_type = "LRS"
 
     tags = {
         environment = "test"
@@ -88,8 +76,8 @@ resource "azurerm_windows_virtual_machine" "exch_lab_vm_exch" {
     }
 }
 
-resource "azurerm_virtual_machine_extension" "exch_lab_exch_ext" {
-    name = "join-domain"
+resource "azurerm_virtual_machine_extension" "exch_lab_exch_ext1" {
+    name = "wait-for-domain-to-be-established"
     virtual_machine_id = azurerm_windows_virtual_machine.exch_lab_vm_exch.id
     publisher = "Microsoft.Compute"
     type = "CustomScriptExtension"
@@ -102,7 +90,28 @@ resource "azurerm_virtual_machine_extension" "exch_lab_exch_ext" {
     SETTINGS
 }
 
-data "azurerm_public_ip" "exch_ip" {
-    name = azurerm_public_ip.exch_lab_pip_exch.name
-    resource_group_name = var.resource_group_name
+resource "azurerm_virtual_machine_extension" "exch_lab_exch_ext2" {
+    name = "join-domain"
+    virtual_machine_id = azurerm_windows_virtual_machine.exch_lab_vm_exch.id
+    publisher = "Microsoft.Compute"
+    type = "JsonADDomainExtension"
+    type_handler_version = "1.3"
+    auto_upgrade_minor_version = true
+    settings = <<SETTINGS
+    {
+        "Name": "${var.domain_name}",
+        "OUPath": "",
+        "User": "${var.admin_username}@${var.domain_name}",
+        "Restart": "true",
+        "Options": "3"
+    }
+    SETTINGS
+    protected_settings = <<SETTINGS
+    {
+        "Password": "${var.admin_password}"
+    }
+    SETTINGS
+    depends_on = [
+        azurerm_virtual_machine_extension.exch_lab_exch_ext1
+    ]
 }
